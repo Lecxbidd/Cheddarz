@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cheddar Apparel
 
-## Getting Started
+Full-stack modern clothing ecommerce app built with:
 
-First, run the development server:
+- Next.js (App Router)
+- Tailwind CSS + shadcn/ui
+- Supabase Auth + PostgreSQL + Storage
+- Zustand cart
+
+## Project phases
+
+- Phase 1-2: Core UI (`Navbar`, `Footer`, `Hero`, `Product Card`, `Product Carousel`, `Theme Toggle`)
+- Phase 3: Supabase setup (project, auth, OAuth, tables, storage bucket)
+- Phase 4: Auth system (register/login/logout/Google/protected profile)
+- Phase 5: Profile CRUD
+- Phase 6: Product system (catalogue, filters, detail page, featured/new/best carousel)
+- Phase 7: Cart system (add/remove/update/clear + subtotal + saved cart for logged-in users)
+- Phase 8: Marketing sections (countdown, testimonials, about, contact)
+- Phase 9: Final polish (responsive, loading states, validation, toast, metadata)
+
+## Local setup
+
+1) Install dependencies
+
+```bash
+npm install
+```
+
+2) Create `.env.local` in project root
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_ANON_KEY
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+3) Apply database schema
+
+- Open Supabase SQL editor
+- Run `supabase/schema.sql`
+
+4) Run app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Supabase configuration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Auth settings
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Enable Email/Password in Supabase Auth providers
+- Enable Google provider and add credentials
+- Add redirect URL:
+  - `http://localhost:3000/auth/callback`
+  - `https://YOUR_DOMAIN/auth/callback` (production)
 
-## Learn More
+### Storage bucket
 
-To learn more about Next.js, take a look at the following resources:
+Create a public bucket, e.g. `media`, for:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Product images
+- Profile images
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment (Vercel)
 
-## Deploy on Vercel
+1) Push project to GitHub
+2) Import repo in Vercel
+3) Add environment variables in Vercel Project Settings:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `NEXT_PUBLIC_SITE_URL` (your Vercel domain)
+4) Deploy
+5) Update Supabase Google OAuth redirect URLs with your Vercel callback URL
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Build check
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+```
