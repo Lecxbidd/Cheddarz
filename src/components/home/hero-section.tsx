@@ -3,28 +3,32 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SITE_NAME } from "@/lib/constants";
+import { CATEGORY_LABELS, CATEGORY_ORDER, SITE_NAME } from "@/lib/constants";
 
 const heroImages = [
   {
-    src: "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Full-length elegant men's styling in tailored smart wear",
+    src: "/assets/guy-wear/91394e5b-ea6f-4de6-a9d2-d90607e9b240.jpg",
+    alt: "Men's wear — sharp casual from Cheddar Apparel",
   },
   {
-    src: "https://images.pexels.com/photos/1300550/pexels-photo-1300550.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Full-length men's elegant blazer and formal styling",
+    src: "/assets/ladies-wear/59eab061-e977-481f-8d8e-f22615ced07d.jpg",
+    alt: "Ladies wear — elevated essentials",
   },
   {
-    src: "https://images.pexels.com/photos/985635/pexels-photo-985635.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    alt: "Full-length elegant lady styling in premium formal wear",
+    src: "/assets/casual-wear/bdcd6f4d-78a0-4ac6-a4b4-28d9bb7ac9fd.jpg",
+    alt: "Professional wear — polished layers",
   },
 ];
 
 export function HeroSection() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const categories = CATEGORY_ORDER.map((key) => ({
+    href: `/catalogue?category=${key}`,
+    label: CATEGORY_LABELS[key],
+  }));
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -34,51 +38,27 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden">
-      <div className="from-muted/40 pointer-events-none absolute inset-0 bg-gradient-to-b via-transparent to-background" />
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-10 lg:px-8 lg:py-24">
-        <div className="relative z-10 space-y-6">
-          <p className="text-primary text-xs font-semibold uppercase tracking-[0.25em]">
-            New season · {SITE_NAME}
-          </p>
-          <div className="space-y-2">
-            <h1 className="animate-fade-in font-heading text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-              Style That Speaks Before You Do
-            </h1>
-            <p className="animate-typewriter font-heading text-2xl tracking-tight text-muted-foreground sm:text-3xl">
-              Let Style Your Look And Appearance
-            </p>
-          </div>
-          <p className="text-muted-foreground max-w-lg text-lg leading-relaxed">
-            Discover premium child, boys, and adult wears made for comfort, confidence, and everyday
-            style.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/catalogue?collection=featured"
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "gap-2 hover:bg-primary/85"
-              )}
-            >
-              Shop Collection
-              <ArrowRight className="size-4" />
-            </Link>
-            <Link
-              href="/catalogue"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "hover:border-primary hover:text-primary"
-              )}
-            >
-              View Catalogue
-            </Link>
-          </div>
-        </div>
-        <div className="relative">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5 dark:ring-white/10">
+    <section className="bg-[#f5f5f5] py-5">
+      <div className="mx-auto grid max-w-6xl gap-4 px-4 sm:px-6 lg:grid-cols-[0.9fr_2.1fr_1fr] lg:px-8">
+        <aside className="hidden rounded-md border bg-white p-3 lg:block">
+          <ul className="space-y-1">
+            {categories.map((category) => (
+              <li key={category.href}>
+                <Link
+                  href={category.href}
+                  className="flex items-center justify-between rounded px-2 py-2 text-sm text-foreground transition hover:bg-muted"
+                >
+                  {category.label}
+                  <ChevronRight className="size-4 text-muted-foreground" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
+        <div className="rounded-md bg-white p-3">
+          <div className="relative overflow-hidden rounded-md">
             <div
-              className="flex h-full w-full transition-transform duration-700 ease-in-out"
+              className="flex h-[300px] w-full transition-transform duration-700 ease-in-out sm:h-[360px]"
               style={{ transform: `translateX(-${activeIndex * 100}%)` }}
             >
               {heroImages.map((img) => (
@@ -89,25 +69,58 @@ export function HeroSection() {
                     fill
                     priority
                     className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 560px"
+                    sizes="(max-width: 1024px) 100vw, 720px"
                   />
                 </div>
               ))}
             </div>
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5 text-white">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em]">Official Store</p>
+              <h1 className="mt-1 text-2xl font-bold sm:text-3xl">Daily Deals at {SITE_NAME}</h1>
+              <p className="mt-1 text-sm text-white/90">
+                Big savings on fashion, essentials, and trending products.
+              </p>
+            </div>
           </div>
-          <div className="mt-4 flex items-center justify-center gap-2">
-            {heroImages.map((img, index) => (
-              <button
-                key={img.alt}
-                type="button"
-                aria-label={`Show hero image ${index + 1}`}
-                onClick={() => setActiveIndex(index)}
-                className={cn(
-                  "h-2.5 w-2.5 rounded-full transition",
-                  activeIndex === index ? "bg-primary w-7" : "bg-primary/30 hover:bg-primary/50"
-                )}
-              />
-            ))}
+          <div className="mt-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {heroImages.map((img, index) => (
+                <button
+                  key={img.alt}
+                  type="button"
+                  aria-label={`Show hero image ${index + 1}`}
+                  onClick={() => setActiveIndex(index)}
+                  className={cn(
+                    "h-2.5 w-2.5 rounded-full transition",
+                    activeIndex === index ? "bg-primary w-7" : "bg-primary/30 hover:bg-primary/50"
+                  )}
+                />
+              ))}
+            </div>
+            <Link
+              href="/catalogue"
+              className={cn(buttonVariants({ size: "sm" }), "gap-2")}
+            >
+              Shop now
+              <ArrowRight className="size-4" />
+            </Link>
+          </div>
+        </div>
+        <div className="space-y-4">
+          <div className="rounded-md border bg-white p-4">
+            <p className="text-xs font-semibold uppercase text-primary">Top services</p>
+            <div className="mt-3 space-y-2 text-sm">
+              <p className="rounded bg-muted px-3 py-2">Fast Delivery</p>
+              <p className="rounded bg-muted px-3 py-2">Pay On Delivery</p>
+              <p className="rounded bg-muted px-3 py-2">Official Store</p>
+            </div>
+          </div>
+          <div className="rounded-md bg-primary p-4 text-primary-foreground">
+            <p className="text-sm font-semibold">Special Offer</p>
+            <p className="mt-1 text-xs">Up to 50% off selected products this week.</p>
+            <Link href="/catalogue" className="mt-3 inline-flex text-xs underline underline-offset-4">
+              Explore deals
+            </Link>
           </div>
         </div>
       </div>

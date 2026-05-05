@@ -4,6 +4,15 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function signInWithGoogle() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    redirect(
+      "/login?error=" +
+        encodeURIComponent(
+          "Supabase is not configured yet. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local."
+        )
+    );
+  }
+
   const supabase = await createClient();
   const origin =
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -11,7 +20,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${origin}/auth/callback`,
+      redirectTo: `${origin}/auth/callback?next=/dashboard`,
     },
   });
 

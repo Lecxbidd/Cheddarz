@@ -34,7 +34,8 @@ export function FeaturedProductsSection({ products }: { products: MockProduct[] 
             Premium picks from Cheddar Apparel
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Curated essentials for children, boys, adults, streetwear and accessories.
+            Curated essentials across kids, boys, girls, ladies, men, adult, street, and professional
+            wear.
           </p>
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
             <span className="rounded-full border bg-background/70 px-3 py-1">Flash Sale</span>

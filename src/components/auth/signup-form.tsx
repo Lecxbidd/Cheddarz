@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 import { signUpWithEmail, type AuthActionState } from "@/actions/auth";
 import { signInWithGoogle } from "@/actions/oauth";
 import { Button } from "@/components/ui/button";
@@ -48,7 +49,8 @@ export function SignupForm() {
             {state.error}
           </p>
         ) : null}
-        <Button type="submit" className="w-full" disabled={pending}>
+        <Button type="submit" className="w-full gap-2" disabled={pending} aria-busy={pending}>
+          {pending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
           {pending ? "Creating account…" : "Create account"}
         </Button>
       </form>

@@ -1,11 +1,12 @@
 export type ProductCategory =
-  | "children_wears"
+  | "kids_wear"
   | "boys_wears"
-  | "adult_wears"
-  | "streetwear"
-  | "casual_wears"
-  | "accessories"
-  | "other";
+  | "girls_wear"
+  | "ladies_wear"
+  | "men_wear"
+  | "adult_wear"
+  | "street_wear"
+  | "professional_wear";
 
 export type Product = {
   id: string;

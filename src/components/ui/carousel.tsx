@@ -231,6 +231,65 @@ function CarouselNext({
   )
 }
 
+/** Pagination dots wired to Embla snap indices—must render inside `<Carousel>`. */
+function CarouselDots({
+  className,
+  dotClassName,
+}: {
+  className?: string
+  dotClassName?: string
+}) {
+  const { api } = useCarousel()
+  const [selected, setSelected] = React.useState(0)
+  const [snapCount, setSnapCount] = React.useState(0)
+
+  React.useEffect(() => {
+    if (!api) return
+
+    const sync = () => {
+      setSnapCount(api.scrollSnapList().length)
+      setSelected(api.selectedScrollSnap())
+    }
+
+    sync()
+    api.on("select", sync)
+    api.on("reInit", sync)
+
+    return () => {
+      api.off("select", sync)
+      api.off("reInit", sync)
+    }
+  }, [api])
+
+  if (snapCount <= 1) return null
+
+  return (
+    <div
+      className={cn("flex flex-wrap justify-center gap-2 pt-6 sm:pt-8", className)}
+      role="tablist"
+      aria-label="Carousel slides"
+    >
+      {Array.from({ length: snapCount }, (_, index) => (
+        <button
+          key={index}
+          type="button"
+          role="tab"
+          aria-selected={selected === index}
+          aria-label={`Go to slide ${index + 1} of ${snapCount}`}
+          className={cn(
+            "h-2 shrink-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            selected === index
+              ? "w-9 bg-lux-accent shadow-[0_0_14px_rgba(180,140,90,0.35)]"
+              : "w-2 bg-muted-foreground/35 hover:bg-muted-foreground/55",
+            dotClassName,
+          )}
+          onClick={() => api?.scrollTo(index)}
+        />
+      ))}
+    </div>
+  )
+}
+
 export {
   type CarouselApi,
   Carousel,
@@ -238,5 +297,6 @@ export {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
   useCarousel,
 }

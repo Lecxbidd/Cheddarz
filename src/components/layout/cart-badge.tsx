@@ -18,7 +18,7 @@ export function CartBadgeLink() {
       aria-label={`Shopping cart${count ? `, ${count} items` : ""}`}
     >
       <span className="relative inline-flex">
-        <ShoppingBag className="size-5" />
+        <ShoppingBag className="size-5 text-foreground/85" />
         {count > 0 ? (
           <span className="bg-primary text-primary-foreground absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full text-[10px] font-semibold">
             {count > 99 ? "99+" : count}

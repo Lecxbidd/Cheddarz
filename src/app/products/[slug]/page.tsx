@@ -8,6 +8,7 @@ import { CATEGORY_LABELS, formatPrice } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AddToCartButton } from "@/components/product/add-to-cart-button";
+import { WishlistToggleButton } from "@/components/product/wishlist-toggle-button";
 
 export async function generateMetadata({
   params,
@@ -117,9 +118,10 @@ export default async function ProductPage({
             </span>
           </div>
 
-          <div className="pt-2">
+          <div className="flex flex-wrap gap-3 pt-2">
+            <WishlistToggleButton product={product} size="sm" />
             {product.stock > 0 ? (
-              <AddToCartButton product={product} size="lg" />
+              <AddToCartButton product={product} size="lg" className="min-w-[200px] flex-1" />
             ) : (
               <p className="text-muted-foreground text-sm">This piece is currently unavailable.</p>
             )}

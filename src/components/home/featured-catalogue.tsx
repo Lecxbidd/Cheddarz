@@ -13,14 +13,15 @@ export function FeaturedCatalogue({ products }: { products: MockProduct[] }) {
         <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl space-y-3">
             <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em]">
-              Featured catalogue
+              Different wears display
             </p>
             <h2 className="font-heading text-3xl tracking-tight sm:text-4xl">
-              Pieces we keep reaching for
+              Explore more styles on the home page
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Thoughtful staples across children, boys, adults, and casual edits — unified by fabric
-              quality and effortless silhouettes.
+              From kids, boys, and girls to ladies, men, adult, street, and professional edits —
+              browse
+              multiple fashion categories in one place.
             </p>
           </div>
           <Link
@@ -30,8 +31,8 @@ export function FeaturedCatalogue({ products }: { products: MockProduct[] }) {
             Browse full catalogue
           </Link>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.slice(0, 6).map((p) => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products.slice(0, 12).map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>

@@ -4,7 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { BubbleBackground } from "@/components/layout/bubble-background";
+import { AiChatbot } from "@/components/layout/ai-chatbot";
 import { SITE_NAME } from "@/lib/constants";
 
 const dmSans = DM_Sans({
@@ -24,16 +24,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE_NAME} · Modern clothing`,
+    default: `${SITE_NAME} · Curated apparel`,
     template: `%s · ${SITE_NAME}`,
   },
   description:
-    "Cheddar Apparel — children's wear, boys' wear, adult fashion, casual essentials, and more.",
+    "Editorial-ready clothing for every age — refined basics, elevated streetwear, and professional staples with a calm, luxury-shopping experience.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   openGraph: {
-    title: `${SITE_NAME} · Modern clothing`,
+    title: `${SITE_NAME} · Curated apparel`,
     description:
-      "Cheddar Apparel — children's wear, boys' wear, adult fashion, casual essentials, and more.",
+      "Editorial-ready clothing for every age — refined basics and elevated essentials.",
     type: "website",
   },
 };
@@ -50,14 +50,17 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${dmSans.variable} ${fraunces.variable} ${geistMono.variable} h-full`}
     >
-      <body className="font-sans min-h-full flex flex-col antialiased">
-        <BubbleBackground />
+      <body
+        suppressHydrationWarning
+        className="font-sans min-h-full flex flex-col antialiased selection:bg-lux-accent-muted selection:text-foreground"
+      >
         <Providers>
-          <div className="relative z-10 flex min-h-full flex-col">
+          <div className="relative z-10 flex min-h-full flex-col transition-colors duration-300 ease-out">
             <SiteHeader />
             <main className="flex flex-1 flex-col">{children}</main>
             <SiteFooter />
           </div>
+          <AiChatbot />
         </Providers>
       </body>
     </html>

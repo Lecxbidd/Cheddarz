@@ -1,34 +1,10 @@
 import type { Product, ProductCategory } from "@/types/product";
 import { createClient } from "@/lib/supabase/server";
 import { MOCK_PRODUCTS } from "@/data/mock-products";
+import { productFromMock } from "@/lib/product-from-mock";
 
 function mapMockToProduct(): Product[] {
-  const categoryMap = {
-    children: "children_wears",
-    boys: "boys_wears",
-    guys: "adult_wears",
-    ladies: "casual_wears",
-    adults: "adult_wears",
-    streetwear: "streetwear",
-    casualwear: "casual_wears",
-    accessories: "accessories",
-  } as const;
-
-  return MOCK_PRODUCTS.map((product) => ({
-    id: product.id,
-    slug: product.slug,
-    name: product.name,
-    description: product.description,
-    price_cents: Math.round(product.price * 100),
-    currency: "USD",
-    category: categoryMap[product.category],
-    sizes: null,
-    image_url: product.imageUrl,
-    featured: product.isFeatured,
-    is_new_arrival: false,
-    is_best_seller: false,
-    stock: 100,
-  }));
+  return MOCK_PRODUCTS.map(productFromMock);
 }
 
 function extractProductIdFromSlug(slug: string) {

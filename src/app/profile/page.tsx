@@ -5,7 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 import { getProfile, deleteProfile } from "@/actions/profile";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { isAdminEmail } from "@/lib/auth/roles";
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -13,6 +15,15 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilePage() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    redirect(
+      "/login?error=" +
+        encodeURIComponent(
+          "Supabase is not configured yet. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local."
+        )
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -23,13 +34,17 @@ export default async function ProfilePage() {
   }
 
   const profile = await getProfile();
+  const isAdmin = isAdminEmail(user.email);
 
   return (
     <div className="flex flex-1 flex-col">
       <section className="border-border bg-muted/30 border-b py-10">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em]">Account</p>
-          <h1 className="font-heading mt-2 text-4xl tracking-tight">Your profile</h1>
+          <div className="mt-2 flex items-center gap-3">
+            <h1 className="font-heading text-4xl tracking-tight">Your profile</h1>
+            <Badge variant={isAdmin ? "default" : "secondary"}>{isAdmin ? "Admin" : "User"}</Badge>
+          </div>
           <p className="text-muted-foreground mt-2 max-w-xl text-sm">
             Create, view, update, or delete your saved details. Changes sync with Supabase{" "}
             <code className="bg-muted rounded px-1 py-0.5 text-xs">profiles</code>.

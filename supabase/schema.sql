@@ -91,16 +91,17 @@ create policy "products_read_all" on public.products
 
 insert into public.products (name, slug, description, price_cents, category, sizes, image_url, featured, is_new_arrival, is_best_seller, stock)
 values
-  ('Little Fox Knit Set', 'little-fox-knit-set', 'Soft organic cotton knit set for toddlers.', 4800, 'children_wears', '{2T,3T,4T}'::text[], 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&q=80', true, true, true, 40),
+  ('Little Fox Knit Set', 'little-fox-knit-set', 'Soft organic cotton knit set for toddlers.', 4800, 'kids_wear', '{2T,3T,4T}'::text[], 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&q=80', true, true, true, 40),
   ('Mini Denim Jacket', 'mini-denim-jacket', 'Classic denim jacket, boys sizes.', 6200, 'boys_wears', '{XS,S,M,L}'::text[], 'https://images.unsplash.com/photo-1519238263530-99bdd11df2e7?w=800&q=80', true, true, false, 25),
-  ('Studio Oxford Shirt', 'studio-oxford-shirt', 'Crisp oxford cloth, tailored fit.', 8900, 'adult_wears', '{S,M,L,XL}'::text[], 'https://images.unsplash.com/photo-1593032465171-9061a2c82b2a?w=800&q=80', true, false, true, 60),
-  ('Urban Cargo Pants', 'urban-cargo-pants', 'Structured cargos with refined taper.', 7400, 'streetwear', '{S,M,L,XL}'::text[], 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=800&q=80', true, false, true, 35),
-  ('Merino Crewneck', 'merino-crewneck', 'Fine merino wool crewneck sweater.', 11200, 'adult_wears', '{S,M,L,XL}'::text[], 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80', false, true, false, 50),
-  ('Sunrise Tee Pack', 'sunrise-tee-pack', 'Three-pack essentials tees.', 3900, 'casual_wears', '{S,M,L}'::text[], 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80', false, true, true, 80),
-  ('Heritage Wool Coat', 'heritage-wool-coat', 'Double-face wool coat, premium lining.', 28900, 'casual_wears', '{M,L,XL}'::text[], 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800&q=80', true, false, false, 15),
+  ('Petal Party Dress', 'petal-party-dress', 'Twirl-ready dress for special days.', 5600, 'girls_wear', '{2T,3T,4T,5T}'::text[], 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=80', true, true, false, 30),
+  ('Studio Oxford Shirt', 'studio-oxford-shirt', 'Crisp oxford cloth, tailored fit.', 8900, 'professional_wear', '{S,M,L,XL}'::text[], 'https://images.unsplash.com/photo-1593032465171-9061a2c82b2a?w=800&q=80', true, false, true, 60),
+  ('Urban Cargo Pants', 'urban-cargo-pants', 'Structured cargos with refined taper.', 7400, 'adult_wear', '{S,M,L,XL}'::text[], 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=800&q=80', true, false, true, 35),
+  ('Merino Crewneck', 'merino-crewneck', 'Fine merino wool crewneck sweater.', 11200, 'men_wear', '{S,M,L,XL}'::text[], 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80', false, true, false, 50),
+  ('Sunrise Tee Pack', 'sunrise-tee-pack', 'Three-pack essentials tees.', 3900, 'adult_wear', '{S,M,L}'::text[], 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80', false, true, true, 80),
+  ('Heritage Wool Coat', 'heritage-wool-coat', 'Double-face wool coat, premium lining.', 28900, 'ladies_wear', '{M,L,XL}'::text[], 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800&q=80', true, false, false, 15),
   ('River Stripe Polo', 'river-stripe-polo', 'Breathable piqué polo with subtle stripes.', 5900, 'boys_wears', '{XS,S,M,L}'::text[], 'https://images.unsplash.com/photo-1586790170083-2f85cefdb562?w=800&q=80', false, false, false, 45),
-  ('Canvas Sneakers', 'canvas-sneakers', 'Minimal canvas sneakers, everyday wear.', 6900, 'accessories', '{7,8,9,10,11}'::text[], 'https://images.unsplash.com/photo-1549298916-b41d281d253a?w=800&q=80', false, false, true, 70),
-  ('Rainbow Raincoat', 'rainbow-raincoat', 'Water-resistant jacket for playful days.', 5200, 'children_wears', '{2T,3T,4T,5T}'::text[], 'https://images.unsplash.com/photo-1620799140408-ed534dff763b?w=800&q=80', false, true, false, 30)
+  ('Canvas Sneakers', 'canvas-sneakers', 'Minimal canvas sneakers, everyday wear.', 6900, 'adult_wear', '{7,8,9,10,11}'::text[], 'https://images.unsplash.com/photo-1549298916-b41d281d253a?w=800&q=80', false, false, true, 70),
+  ('Rainbow Raincoat', 'rainbow-raincoat', 'Water-resistant jacket for playful days.', 5200, 'girls_wear', '{2T,3T,4T,5T}'::text[], 'https://images.unsplash.com/photo-1620799140408-ed534dff763b?w=800&q=80', false, true, false, 30)
 on conflict (slug) do nothing;
 
 -- Saved carts (per user)

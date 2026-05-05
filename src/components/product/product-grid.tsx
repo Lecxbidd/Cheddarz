@@ -1,7 +1,7 @@
 "use client";
 
 import { ProductCard } from "@/components/product/product-card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ProductSkeletonGrid } from "@/components/product/product-card-skeleton";
 import type { MockProduct } from "@/data/mock-products";
 
 export function ProductGrid({
@@ -16,18 +16,7 @@ export function ProductGrid({
   emptyDescription?: string;
 }) {
   if (loading) {
-    return (
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="space-y-3">
-            <Skeleton className="aspect-[4/5] w-full rounded-2xl" />
-            <Skeleton className="h-4 w-2/3" />
-            <Skeleton className="h-4 w-1/3" />
-            <Skeleton className="h-8 w-full rounded-lg" />
-          </div>
-        ))}
-      </div>
-    );
+    return <ProductSkeletonGrid count={8} />;
   }
 
   if (products.length === 0) {
