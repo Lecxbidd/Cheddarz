@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import type { MockProduct } from "@/data/mock-products";
@@ -33,6 +34,10 @@ export function ProductCrudTable({ products }: { products: MockProduct[] }) {
 
   function onSave() {
     if (!draft.name.trim() || draft.price <= 0) return;
+    if (!draft.imageUrl.trim()) {
+      toast.error("Upload a product image (or provide an image URL) before saving.");
+      return;
+    }
     if (editingId) {
       setRows((prev) =>
         prev.map((row) =>
@@ -169,6 +174,24 @@ export function ProductCrudTable({ products }: { products: MockProduct[] }) {
               <Upload className="size-4 shrink-0 text-foreground opacity-90" aria-hidden />
               {uploading ? "Uploading…" : "Upload"}
             </Button>
+          </div>
+          <div className="sm:col-span-2 lg:col-span-3">
+            <p className="mb-2 text-xs text-muted-foreground">Image preview</p>
+            <div className="relative h-40 w-full overflow-hidden rounded-md border bg-muted/20 sm:w-56">
+              {draft.imageUrl.trim() ? (
+                <Image
+                  src={draft.imageUrl}
+                  alt="Draft product preview"
+                  fill
+                  className="object-cover"
+                  sizes="224px"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                  Upload an image to preview it here
+                </div>
+              )}
+            </div>
           </div>
           <Input
             className="sm:col-span-2"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -82,16 +82,24 @@ export function StripeCheckoutSection({
   shipping,
   disabled,
   onPaid,
+  promoCode,
 }: {
   lines: CartLine[];
   shipping: ShippingSnapshot;
   disabled: boolean;
   onPaid: () => void;
+  /** Applied welcome code sent to server for PaymentIntent amount */
+  promoCode: string | null;
 }) {
   const stripePromise = getStripeBrowser();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setClientSecret(null);
+    setError(null);
+  }, [promoCode]);
 
   const shippingReady =
     Boolean(shipping.email.trim()) &&
@@ -110,6 +118,7 @@ export function StripeCheckoutSection({
             id: l.product.id,
             quantity: l.quantity,
           })),
+          promoCode: promoCode?.trim() || undefined,
         }),
       });
       const data: { clientSecret?: string; error?: string } = await res.json();

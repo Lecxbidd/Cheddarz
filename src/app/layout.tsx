@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AiChatbot } from "@/components/layout/ai-chatbot";
+import { SiteInteractions } from "@/components/layout/site-interactions";
 import { SITE_NAME } from "@/lib/constants";
 
 const dmSans = DM_Sans({
@@ -55,6 +56,7 @@ export default function RootLayout({
         className="font-sans min-h-full flex flex-col antialiased selection:bg-lux-accent-muted selection:text-foreground"
       >
         <Providers>
+          <SiteInteractions />
           <div className="relative z-10 flex min-h-full flex-col transition-colors duration-300 ease-out">
             <SiteHeader />
             <main className="flex flex-1 flex-col">{children}</main>

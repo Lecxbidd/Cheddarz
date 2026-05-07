@@ -179,10 +179,10 @@ export default function HomePage() {
       <section className="mx-auto grid max-w-7xl gap-5 px-4 py-14 sm:px-6 md:grid-cols-2 lg:px-8">
         <Link href="/catalogue?category=girls_wear" className={`${tileLink} aspect-[3/5]`}>
           <Image
-            src="/assets/hero/slide-girls-denim.jpg"
+            src="/assets/girls-wear/04ce930c02c37cdf99610f36f5ab4518.jpg"
             alt="Girls denim editorial — playful capsule styling"
             fill
-            className="object-cover object-[center_40%] transition duration-700 group-hover:scale-[1.03]"
+            className="object-cover object-center transition duration-700 group-hover:scale-[1.03]"
             sizes="(max-width:768px) 100vw, 50vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
@@ -193,10 +193,10 @@ export default function HomePage() {
         </Link>
         <Link href="/catalogue?category=boys_wears" className={`${tileLink} aspect-[3/5]`}>
           <Image
-            src="/assets/boy-wear/e84cd9d0-7322-4b47-98b8-a080df9b605e.jpg"
+            src="/assets/hero/kids-western.png"
             alt="Boyswear editorial — everyday essentials and soft layers"
             fill
-            className="object-cover object-[center_35%] transition duration-700 group-hover:scale-[1.03]"
+            className="object-cover object-[center_32%] transition duration-700 group-hover:scale-[1.03]"
             sizes="(max-width:768px) 100vw, 50vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />

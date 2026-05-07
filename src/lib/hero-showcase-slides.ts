@@ -25,8 +25,8 @@ export const HERO_SHOWCASE_SLIDES: TcpHeroSlide[] = [
   {
     src: "/assets/hero/slide-mens-blazer.png",
     alt: "Man in black blazer and white tee — smart casual",
-    headline: "Professional wear",
-    sub: "Sharp layers · Desk to dinner",
+    headline: "Casual wear",
+    sub: "Polished layers · Day to dinner",
   },
   {
     src: "/assets/hero/slide-ladies-outdoor.png",

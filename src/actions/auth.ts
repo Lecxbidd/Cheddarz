@@ -45,10 +45,14 @@ export async function signInAdminWithEmail(
 ): Promise<AuthActionState> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
+  const requiredAdminPassword = process.env.ADMIN_LOGIN_PASSWORD ?? "";
 
   if (!email || !password) return { error: "Email and password are required." };
   if (!EMAIL_REGEX.test(email)) return { error: "Please provide a valid email address." };
   if (!isAdminEmail(email)) return { error: "This account is not allowed for admin access." };
+  if (requiredAdminPassword && password !== requiredAdminPassword) {
+    return { error: "This account is not allowed for admin access." };
+  }
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return { error: MISSING_SUPABASE_ENV_ERROR };
   }

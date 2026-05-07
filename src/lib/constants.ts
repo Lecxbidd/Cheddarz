@@ -3,14 +3,14 @@ import type { ProductCategory } from "@/types/product";
 export const SITE_NAME = "Cheddar Apparel";
 
 export const CATEGORY_LABELS: Record<ProductCategory, string> = {
-  kids_wear: "Kids wear",
-  boys_wears: "Boys wears",
+  kids_wear: "Kid wear",
+  boys_wears: "Boy wear",
   girls_wear: "Girls wear",
   ladies_wear: "Ladies wear",
-  men_wear: "Men wear",
+  men_wear: "Guy wear",
   adult_wear: "Adult wear",
   street_wear: "Street wear",
-  professional_wear: "Professional wear",
+  professional_wear: "Casual wear",
 };
 
 export const CATEGORY_ORDER: ProductCategory[] = [

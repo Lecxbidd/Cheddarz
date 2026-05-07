@@ -19,6 +19,8 @@ export async function POST(request: Request) {
   }
 
   const items = (body as { items?: unknown }).items;
+  const promoCodeRaw = (body as { promoCode?: unknown }).promoCode;
+  const promoCode = typeof promoCodeRaw === "string" ? promoCodeRaw : null;
   if (!Array.isArray(items)) {
     return NextResponse.json({ error: "Expected items array" }, { status: 400 });
   }
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
     };
   });
 
-  const priced = await computeCartTotalCents(normalized);
+  const priced = await computeCartTotalCents(normalized, { promoCode });
   if (!priced.ok) {
     return NextResponse.json({ error: priced.error }, { status: 400 });
   }
@@ -44,6 +46,9 @@ export async function POST(request: Request) {
       automatic_payment_methods: { enabled: true },
       metadata: {
         item_count: String(normalized.length),
+        subtotal_cents: String(priced.subtotalCents),
+        discount_cents: String(priced.discountCents),
+        promo_code: priced.promoCode ?? "",
       },
     });
 

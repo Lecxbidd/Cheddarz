@@ -11,6 +11,31 @@ import { WishlistBadgeLink } from "@/components/layout/wishlist-badge";
 import { AdminBannerLinks } from "@/components/layout/admin-banner-links";
 import { PRIMARY_NAV_LINKS } from "@/lib/nav-links";
 import { cn } from "@/lib/utils";
+import { CATEGORY_LABELS, CATEGORY_ORDER } from "@/lib/constants";
+import { ChevronDown } from "lucide-react";
+
+const MEGA_MENU_CATALOGUE_LINKS = CATEGORY_ORDER.map((category) => ({
+  href: `/catalogue?category=${category}`,
+  label: CATEGORY_LABELS[category],
+}));
+
+const MEGA_MENU_QUICK_LINKS = [
+  {
+    href: "/catalogue?category=street_wear",
+    title: "Street edits",
+    copy: "Trending pieces for casual and city looks.",
+  },
+  {
+    href: "/catalogue?category=professional_wear",
+    title: "Casual wear",
+    copy: "Everyday essentials with elevated fit.",
+  },
+  {
+    href: "/catalogue?category=ladies_wear",
+    title: "Ladies spotlight",
+    copy: "Latest arrivals curated for women.",
+  },
+] as const;
 
 export async function SiteHeader() {
   let user = null;
@@ -61,17 +86,64 @@ export async function SiteHeader() {
             className="ml-2 hidden items-center gap-1 lg:ml-6 lg:flex xl:gap-2"
             aria-label="Primary"
           >
-            {PRIMARY_NAV_LINKS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={cn(
-                  "nav-link-underline px-3 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {PRIMARY_NAV_LINKS.map((item) =>
+              item.label === "Catalogue" ? (
+                <div key={item.label} className="group/mega relative">
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "nav-link-underline inline-flex items-center gap-1.5 px-3 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
+                    )}
+                  >
+                    {item.label}
+                    <ChevronDown className="size-3.5 transition-transform duration-200 group-hover/mega:rotate-180" />
+                  </Link>
+                  <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 mt-2 w-[min(86vw,760px)] -translate-x-1/2 rounded-2xl border border-border/80 bg-background/98 p-5 opacity-0 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.45)] ring-1 ring-black/[0.04] backdrop-blur-xl transition-all duration-200 group-hover/mega:pointer-events-auto group-hover/mega:visible group-hover/mega:opacity-100 dark:ring-white/[0.06]">
+                    <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
+                      <div>
+                        <p className="lux-eyebrow text-lux-accent">Browse by category</p>
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                          {MEGA_MENU_CATALOGUE_LINKS.map((entry) => (
+                            <Link
+                              key={entry.href}
+                              href={entry.href}
+                              className="rounded-lg border border-border/70 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                            >
+                              {entry.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="lux-eyebrow text-lux-accent">Quick picks</p>
+                        <div className="mt-3 space-y-2">
+                          {MEGA_MENU_QUICK_LINKS.map((entry) => (
+                            <Link
+                              key={entry.href + entry.title}
+                              href={entry.href}
+                              className="block rounded-xl border border-border/70 bg-card/60 p-3 transition hover:bg-muted"
+                            >
+                              <p className="text-sm font-semibold text-foreground">{entry.title}</p>
+                              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{entry.copy}</p>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={cn(
+                    "nav-link-underline px-3 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </nav>
         </div>
 

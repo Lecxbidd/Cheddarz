@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,12 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/constants";
 import { StripeCheckoutSection } from "@/components/checkout/stripe-checkout";
+import { normalizePromoCode, WELCOME70_PROMO_CODE, welcome70DiscountCents } from "@/lib/promo/welcome70";
+import {
+  isWelcome70AlreadyUsed,
+  markWelcome70Used,
+  readWelcomeOfferFromStorage,
+} from "@/lib/promo/welcome-offer-storage";
 import { cartTotals, useCartStore } from "@/stores/cart-store";
 
 export function CheckoutClient() {
@@ -20,6 +26,22 @@ export function CheckoutClient() {
   const clear = useCartStore((s) => s.clear);
   const { subtotal, count } = cartTotals(lines);
   const [busy, setBusy] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "cod">("stripe");
+  const [promoInput, setPromoInput] = useState("");
+  const [welcomeAlreadyUsed, setWelcomeAlreadyUsed] = useState(false);
+
+  useEffect(() => {
+    setWelcomeAlreadyUsed(isWelcome70AlreadyUsed());
+    const offer = readWelcomeOfferFromStorage();
+    if (offer && !isWelcome70AlreadyUsed()) {
+      setPromoInput(WELCOME70_PROMO_CODE);
+    }
+  }, []);
+
+  const welcomeApplied =
+    !welcomeAlreadyUsed && normalizePromoCode(promoInput) === WELCOME70_PROMO_CODE;
+  const discountCents = welcomeApplied ? welcome70DiscountCents(subtotal) : 0;
+  const payableCents = Math.max(0, subtotal - discountCents);
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -47,17 +69,27 @@ export function CheckoutClient() {
 
   function finalizeDemoOrder(methodLabel: string) {
     const orderId = `CHD-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
-    window.sessionStorage.setItem(
-      "cheddarLastDemoOrder",
-      JSON.stringify({
-        id: orderId,
-        email: email.trim(),
-        totalCents: subtotal,
-        at: new Date().toISOString(),
-        items: count,
-        paymentMethod: methodLabel,
-      })
-    );
+    if (welcomeApplied) {
+      markWelcome70Used();
+      setWelcomeAlreadyUsed(true);
+    }
+    const orderRecord = {
+      id: orderId,
+      email: email.trim(),
+      totalCents: payableCents,
+      at: new Date().toISOString(),
+      items: count,
+      paymentMethod: methodLabel,
+      promoCode: welcomeApplied ? WELCOME70_PROMO_CODE : undefined,
+    };
+    window.sessionStorage.setItem("cheddarLastDemoOrder", JSON.stringify(orderRecord));
+    try {
+      const prev = JSON.parse(localStorage.getItem("cheddarz-demo-orders") ?? "[]") as unknown[];
+      const next = Array.isArray(prev) ? [...prev, orderRecord].slice(-30) : [orderRecord];
+      localStorage.setItem("cheddarz-demo-orders", JSON.stringify(next));
+    } catch {
+      // no-op
+    }
     clear();
     toast.success("Order placed", {
       description: `Reference ${orderId}`,
@@ -165,41 +197,89 @@ export function CheckoutClient() {
           </div>
 
           <div className="space-y-4 rounded-2xl border bg-card p-6 shadow-sm">
-            <StripeCheckoutSection
-              lines={lines}
-              shipping={shippingSnapshot}
-              disabled={busy || !shippingComplete}
-              onPaid={handleStripePaid}
-            />
-
-            <div className="relative py-6">
-              <div className="absolute inset-x-0 top-1/2 border-t border-border" />
-              <span className="relative mx-auto flex w-fit bg-card px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Or pay later
-              </span>
-            </div>
-
             <div className="space-y-3">
-              <h3 className="font-heading text-base">Pay on delivery</h3>
+              <h3 className="font-heading text-base">Payment method</h3>
               <p className="text-muted-foreground text-sm">
-                No card needed — confirm your details and we&apos;ll hold the order for cash or POS on delivery (demo
-                flow).
+                Choose Google Pay / Apple Pay / Card (Stripe), or Pay on delivery.
               </p>
               <label className="flex cursor-pointer items-center gap-3 rounded-lg border p-3">
-                <input type="radio" name="pay-demo" defaultChecked className="size-4" />
-                <span className="text-sm">Pay on delivery — simulated confirmation</span>
+                <input
+                  type="radio"
+                  name="payment-method"
+                  className="size-4"
+                  checked={paymentMethod === "stripe"}
+                  onChange={() => setPaymentMethod("stripe")}
+                />
+                <span className="text-sm">Google Pay / Apple Pay / Card (Stripe)</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3 rounded-lg border p-3">
+                <input
+                  type="radio"
+                  name="payment-method"
+                  className="size-4"
+                  checked={paymentMethod === "cod"}
+                  onChange={() => setPaymentMethod("cod")}
+                />
+                <span className="text-sm">Pay on delivery</span>
               </label>
             </div>
 
-            <Button type="submit" className="w-full sm:w-auto" size="lg" disabled={busy}>
-              {busy ? "Placing order…" : "Place order (pay on delivery)"}
-            </Button>
+            {paymentMethod === "stripe" ? (
+              <StripeCheckoutSection
+                lines={lines}
+                shipping={shippingSnapshot}
+                disabled={busy || !shippingComplete}
+                onPaid={handleStripePaid}
+                promoCode={welcomeApplied ? WELCOME70_PROMO_CODE : null}
+              />
+            ) : (
+              <div className="space-y-3 rounded-xl border border-border/70 bg-muted/30 p-4">
+                <h3 className="font-heading text-base">Pay on delivery</h3>
+                <p className="text-muted-foreground text-sm">
+                  No card needed — confirm your details and we&apos;ll hold your order for cash or POS on delivery.
+                </p>
+                <Button type="submit" className="w-full sm:w-auto" size="lg" disabled={busy}>
+                  {busy ? "Placing order…" : "Place order (pay on delivery)"}
+                </Button>
+              </div>
+            )}
           </div>
         </form>
       </div>
 
       <aside className="h-fit space-y-4 rounded-2xl border bg-card p-6 shadow-sm lg:sticky lg:top-24">
         <h3 className="font-heading text-lg">Your bag</h3>
+        <div className="space-y-2 rounded-xl border border-dashed bg-muted/20 p-3">
+          <Label htmlFor="co-promo" className="text-xs font-medium text-muted-foreground">
+            Promo code
+          </Label>
+          {welcomeAlreadyUsed ? (
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              The welcome offer was already used on a previous order.
+            </p>
+          ) : (
+            <>
+              <Input
+                id="co-promo"
+                placeholder="e.g. WELCOME70"
+                value={promoInput}
+                onChange={(e) => setPromoInput(e.target.value)}
+                autoComplete="off"
+              />
+              {readWelcomeOfferFromStorage() ? (
+                <p className="text-muted-foreground text-[11px] leading-relaxed">
+                  Your signup offer is active for a limited time — code applied when it matches{" "}
+                  <span className="font-medium">{WELCOME70_PROMO_CODE}</span>.
+                </p>
+              ) : (
+                <p className="text-muted-foreground text-[11px] leading-relaxed">
+                  New accounts: 70% off your first order within 12 hours with{" "}
+                  <span className="font-medium">{WELCOME70_PROMO_CODE}</span>.
+                </p>
+              )}
+            </>
+          )}
+        </div>
         <Separator />
         <ul className="max-h-[320px] space-y-3 overflow-y-auto pr-1">
           {lines.map(({ product, quantity }) => (
@@ -227,6 +307,16 @@ export function CheckoutClient() {
         <div className="flex justify-between text-sm font-medium">
           <span>Subtotal</span>
           <span className="tabular-nums">{formatPrice(subtotal)}</span>
+        </div>
+        {welcomeApplied ? (
+          <div className="flex justify-between text-sm text-lux-accent">
+            <span>Welcome 70% off</span>
+            <span className="tabular-nums">−{formatPrice(discountCents)}</span>
+          </div>
+        ) : null}
+        <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
+          <span>Total</span>
+          <span className="tabular-nums">{formatPrice(payableCents)}</span>
         </div>
         <p className="text-muted-foreground text-xs leading-relaxed">
           Items listed here match what&apos;s in your cart (saved in this browser). Stripe verifies the total again on

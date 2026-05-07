@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getProfile } from "@/actions/profile";
+import Image from "next/image";
 
 export default async function UserDashboardPage({
   searchParams,
@@ -18,6 +20,8 @@ export default async function UserDashboardPage({
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+  const profile = await getProfile();
+  const avatar = profile?.avatar_url || "";
 
   return (
     <div className="flex flex-1 flex-col">
@@ -34,10 +38,35 @@ export default async function UserDashboardPage({
         </div>
       </section>
       <section className="py-10">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-4 rounded-2xl border bg-card p-4">
+            <div className="flex items-center gap-3">
+              <div className="relative size-14 overflow-hidden rounded-full border bg-muted">
+                {avatar ? (
+                  <Image src={avatar} alt="Profile avatar" fill className="object-cover" sizes="56px" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-[10px] text-muted-foreground">
+                    No avatar
+                  </div>
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{profile?.full_name ?? "Set up your profile"}</p>
+                <p className="text-xs text-muted-foreground">
+                  Upload your avatar, update details, and manage orders from your account.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="mx-auto grid max-w-4xl gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:px-8">
           <Link href="/profile" className="rounded-xl border bg-card p-5 transition hover:shadow-sm">
             <p className="text-sm font-semibold">Manage profile</p>
             <p className="mt-1 text-xs text-muted-foreground">Update your personal and shipping details.</p>
+          </Link>
+          <Link href="/orders" className="rounded-xl border bg-card p-5 transition hover:shadow-sm">
+            <p className="text-sm font-semibold">Manage orders</p>
+            <p className="mt-1 text-xs text-muted-foreground">Track references, payment methods, and status.</p>
           </Link>
           <Link href="/cart" className="rounded-xl border bg-card p-5 transition hover:shadow-sm">
             <p className="text-sm font-semibold">View cart</p>

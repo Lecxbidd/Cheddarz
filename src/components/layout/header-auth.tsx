@@ -94,6 +94,7 @@ export function HeaderAuth({
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/dashboard")}>Dashboard</DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/profile")}>Profile</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/orders")}>Orders</DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/cart")}>Cart</DropdownMenuItem>
         {isAdmin ? (
           <DropdownMenuItem onClick={() => router.push("/admin")}>Admin Dashboard</DropdownMenuItem>

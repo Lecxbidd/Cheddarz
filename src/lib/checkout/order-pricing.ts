@@ -1,12 +1,26 @@
 import { MOCK_PRODUCTS } from "@/data/mock-products";
 import { productFromMock } from "@/lib/product-from-mock";
 import { createClient } from "@/lib/supabase/server";
+import {
+  normalizePromoCode,
+  welcome70DiscountCents,
+  welcome70TotalCents,
+  WELCOME70_PROMO_CODE,
+} from "@/lib/promo/welcome70";
 
 export type CartItemInput = { id: string; quantity: number };
 
+export type PricedCart = {
+  subtotalCents: number;
+  discountCents: number;
+  totalCents: number;
+  promoCode: string | null;
+};
+
 export async function computeCartTotalCents(
-  items: CartItemInput[]
-): Promise<{ ok: true; totalCents: number } | { ok: false; error: string }> {
+  items: CartItemInput[],
+  options?: { promoCode?: string | null }
+): Promise<{ ok: true } & PricedCart | { ok: false; error: string }> {
   if (!items.length) {
     return { ok: false, error: "Cart is empty" };
   }
@@ -48,12 +62,27 @@ export async function computeCartTotalCents(
     return { ok: false, error: `Unknown product: ${line.id}` };
   }
 
+  const subtotalCents = totalCents;
+  const promoRaw = options?.promoCode?.trim();
+  const promoNorm = promoRaw ? normalizePromoCode(promoRaw) : "";
+  const promoActive = promoNorm === WELCOME70_PROMO_CODE;
+  const discountCents = promoActive ? welcome70DiscountCents(subtotalCents) : 0;
+  totalCents = welcome70TotalCents(subtotalCents);
+
   if (totalCents < 50) {
     return {
       ok: false,
-      error: "Card payments require a total of at least $0.50 USD. Add another item or use Pay on delivery.",
+      error: promoActive
+        ? "After the welcome discount, the card total is below $0.50 USD. Add another item or use Pay on delivery."
+        : "Card payments require a total of at least $0.50 USD. Add another item or use Pay on delivery.",
     };
   }
 
-  return { ok: true, totalCents };
+  return {
+    ok: true,
+    subtotalCents,
+    discountCents,
+    totalCents,
+    promoCode: promoActive ? WELCOME70_PROMO_CODE : null,
+  };
 }

@@ -219,6 +219,120 @@
   animation: toast-enter 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Global visual polish: animated bubbles + click glow */
+@keyframes bubble-float {
+  0% {
+    transform: translate3d(0, 16px, 0) scale(0.95);
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.36;
+  }
+  100% {
+    transform: translate3d(0, -24px, 0) scale(1.05);
+    opacity: 0.14;
+  }
+}
+
+@keyframes click-glow-burst {
+  0% {
+    transform: translate(-50%, -50%) scale(0.25);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.9);
+    opacity: 0;
+  }
+}
+
+.site-bubbles-layer {
+  z-index: 1;
+}
+
+.site-bubble {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 28% 30%,
+    oklch(0.94 0.03 86 / 0.45) 0%,
+    oklch(0.73 0.11 58 / 0.3) 35%,
+    oklch(0.65 0.08 58 / 0.12) 65%,
+    transparent 100%
+  );
+  filter: blur(0.2px);
+  animation: bubble-float 11s ease-in-out infinite alternate;
+}
+
+.site-bubble-1 {
+  left: 4%;
+  top: 20%;
+  height: 140px;
+  width: 140px;
+}
+.site-bubble-2 {
+  left: 18%;
+  top: 66%;
+  height: 96px;
+  width: 96px;
+  animation-duration: 13s;
+}
+.site-bubble-3 {
+  right: 7%;
+  top: 16%;
+  height: 160px;
+  width: 160px;
+  animation-duration: 14s;
+}
+.site-bubble-4 {
+  right: 18%;
+  bottom: 8%;
+  height: 118px;
+  width: 118px;
+  animation-duration: 12s;
+}
+.site-bubble-5 {
+  left: 42%;
+  top: 12%;
+  height: 84px;
+  width: 84px;
+  animation-duration: 10s;
+}
+.site-bubble-6 {
+  left: 58%;
+  bottom: 4%;
+  height: 148px;
+  width: 148px;
+  animation-duration: 15s;
+}
+
+.site-cursor-glow {
+  position: absolute;
+  z-index: 5;
+  height: 26px;
+  width: 26px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    oklch(0.95 0.05 82 / 0.95) 0%,
+    oklch(0.78 0.12 58 / 0.42) 48%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.75;
+  transition: opacity 0.2s ease-out;
+}
+
+.site-click-glow {
+  position: absolute;
+  z-index: 8;
+  height: 44px;
+  width: 44px;
+  border-radius: 9999px;
+  border: 2px solid oklch(0.95 0.04 84 / 0.95);
+  box-shadow: 0 0 0 6px oklch(0.82 0.1 58 / 0.2), 0 0 34px oklch(0.78 0.12 58 / 0.5);
+  animation: click-glow-burst 0.58s ease-out forwards;
+}
+
 /* Brand wordmark — restrained charcoal ↔ bronze shimmer */
 @keyframes brand-letter-hue {
   0%,
@@ -546,6 +660,15 @@
 
   .nav-link-underline::after {
     transition: none;
+  }
+
+  .site-bubble,
+  .site-click-glow {
+    animation: none !important;
+  }
+
+  .site-cursor-glow {
+    display: none;
   }
 
   .countdown-digit-pulse {

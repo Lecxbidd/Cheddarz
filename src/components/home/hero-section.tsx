@@ -19,7 +19,7 @@ const heroImages = [
   },
   {
     src: "/assets/casual-wear/bdcd6f4d-78a0-4ac6-a4b4-28d9bb7ac9fd.jpg",
-    alt: "Professional wear — polished layers",
+    alt: "Casual wear — polished layers",
   },
 ];
 
